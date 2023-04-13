@@ -8,15 +8,17 @@ use App\Models\ChildParent;
 use App\Models\Doctor;
 
 
-class Comment extends Model
+class Reply extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'comment',
+        'reply',
         'child_parent_id',
+        'post_id',
         'doctor_id',
-        'post_id'
+        'comment_id'
+
     ];
 
     public function child_parent()

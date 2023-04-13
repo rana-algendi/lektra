@@ -43,6 +43,9 @@ class DoctorController extends Controller
       $validator= Validator::make($request->all(),[
         'name' => 'required|string|between:2,100' ,
         'email' => 'required|string|email|max:100|unique:users',
+        'phone' => 'string|min:11' ,
+        'address' => 'string|between:2,100' ,
+        'about' => 'string|between:2,100' ,
         'password' => 'required|string|confirmed|min:6',
       ]);
       if ($validator->fails()) {
@@ -80,6 +83,28 @@ class DoctorController extends Controller
             'user' => auth()->user()
 
         ]);
+    }
+
+    public function update(Request $request)
+    {
+
+      return response()->json($request->image);
+        // $attrs = $request->validate([
+        //     'name' => 'required|string',
+
+        // ]);
+
+        // $image = $this->saveImage($request->image, 'profiles');
+
+        // auth()->user()->update([
+        //     'name' => $attrs['name'],
+        //     'image' => $image
+        // ]);
+
+        // return response([
+        //     'message' => 'User updated.',
+        //     'user' => auth()->user()
+        // ], 200);
     }
 
 

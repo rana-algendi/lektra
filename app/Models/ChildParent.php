@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-//use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 //use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,7 +11,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class ChildParent extends Authenticatable implements JWTSubject
 {
-    use  Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,9 +21,10 @@ class ChildParent extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'email',
-        'image',
-        'phone',
         'password',
+        'phone',
+        'image',
+        
     ];
 
     /**
@@ -55,4 +56,14 @@ class ChildParent extends Authenticatable implements JWTSubject
         return ['role' => 'ChildParent'];
     }
 
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }

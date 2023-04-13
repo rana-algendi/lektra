@@ -21,6 +21,10 @@ class Doctor extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'address',
+        'about',
+        'image',
         'password',
     ];
 
@@ -53,4 +57,8 @@ class Doctor extends Authenticatable implements JWTSubject
         return ['role' => 'doctor'];
     }
 
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }

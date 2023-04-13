@@ -7,7 +7,7 @@ use App\Models\ChildParent;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Config;
 
-
+use Illuminate\Support\Facades\Hash;
 
 class ChildParentController extends Controller
 {
@@ -37,6 +37,11 @@ class ChildParentController extends Controller
     }
 
 
+
+
+
+
+   
  
     public function register(Request $request)
     {
@@ -44,6 +49,10 @@ class ChildParentController extends Controller
         'name' => 'required|string|between:2,100' ,
         'email' => 'required|string|email|max:100|unique:users',
         'password' => 'required|string|confirmed|min:6',
+        'phone' => 'string|min:11' ,
+        'image' => '' ,
+
+
       ]);
       if ($validator->fails()) {
         return response()->json($validator->errors()->toJson(),400); 
@@ -70,6 +79,10 @@ class ChildParentController extends Controller
         return response()->json(auth()->user());
     }
 
+     
+ 
+ 
+
 
 
     protected function createNewToken($token){
@@ -83,28 +96,32 @@ class ChildParentController extends Controller
     }
     
     
+    
 
     // update user
     public function update(Request $request)
     {
+
+
+      return response()->json(['request' => $request->file('image')->extension()]);
         $attrs = $request->validate([
-            'name' => 'required|string'
+            'name' => 'string',
         ]);
 
-        $image = $this->saveImage($request->image, 'profiles');
-
-        auth()->user()->update([
-            'name' => $attrs['name'],
-            'image' => $image
+        $image = time()."-".$request->file("image")->getClientOriginalName()."-".$request->file("image")->extension();
+        //$image = $this->saveImage($request->image, 'profiles');
+        auth("ChildParent-api")->user()->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'image' => $image,
+            'password' => Hash::make($request->password),
         ]);
 
         return response([
-            'message' => 'Parent updated.',
-            'child_parent' => auth()->user()
+            'message' => 'User updated.',
+            'user' => auth()->user()
         ], 200);
     }
-
-
 
 
 
