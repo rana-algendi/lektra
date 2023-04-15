@@ -4,23 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ChildParent;
+use App\Models\Doctor;
 
-class Appointment extends Model
+class Image extends Model
 {
+
     use HasFactory;
+
     protected $fillable = [
+        'title',
+        'image',
+        'descrpition',
+        'taken_at',
         'child_parent_id',
         'doctor_id',
-        'date',
-        'day',
-        'time',
-        'status',
+        'report_id'
+
     ];
 
-    public function child_parent(){
+    public function child_parent()
+    {
         return $this->belongsTo(ChildParent::class);
     }
-    public function doctor(){
+
+    public function doctor()
+    {
         return $this->belongsTo(Doctor::class);
     }
 }

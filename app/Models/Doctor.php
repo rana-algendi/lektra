@@ -61,4 +61,8 @@ class Doctor extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Post::class);
     }
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
 }

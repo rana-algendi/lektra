@@ -45,21 +45,27 @@ class ChildParentController extends Controller
  
     public function register(Request $request)
     {
+
       $validator= Validator::make($request->all(),[
         'name' => 'required|string|between:2,100' ,
         'email' => 'required|string|email|max:100|unique:users',
         'password' => 'required|string|confirmed|min:6',
         'phone' => 'string|min:11' ,
-        'image' => '' ,
+        'image' =>'' 
 
 
       ]);
       if ($validator->fails()) {
         return response()->json($validator->errors()->toJson(),400); 
       }
+      $image = $this->saveImage($request->image, 'profiles');
+
       $user = ChildParent::create(array_merge(
+        
         $validator->validated(),
-        ['password'=>bcrypt($request->password)]
+        ['password'=>bcrypt($request->password),
+        'image' => $image,
+        ]
       ));
       return response()->json([
         'message' => 'Parent successfully registerd' ,
@@ -103,13 +109,13 @@ class ChildParentController extends Controller
     {
 
 
-      return response()->json(['request' => $request->file('image')->extension()]);
-        $attrs = $request->validate([
-            'name' => 'string',
-        ]);
+      //return response()->json(['request' => $request->file('image')->extension()]);
+       // $attrs = $request->validate([
+         //   'name' => 'string',
+        //]);
 
-        $image = time()."-".$request->file("image")->getClientOriginalName()."-".$request->file("image")->extension();
-        //$image = $this->saveImage($request->image, 'profiles');
+     //  $image = time()."-".$request->file("image")->getClientOriginalName()."-".$request->file("image")->extension();
+        $image = $this->saveImage($request->image, 'profiles');
         auth("ChildParent-api")->user()->update([
             'name' => $request->name,
             'phone' => $request->phone,
@@ -118,7 +124,7 @@ class ChildParentController extends Controller
         ]);
 
         return response([
-            'message' => 'User updated.',
+            'message' => 'parent updated.',
             'user' => auth()->user()
         ], 200);
     }

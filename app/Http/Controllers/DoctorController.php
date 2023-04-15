@@ -47,13 +47,18 @@ class DoctorController extends Controller
         'address' => 'string|between:2,100' ,
         'about' => 'string|between:2,100' ,
         'password' => 'required|string|confirmed|min:6',
+        'image'=>''
       ]);
       if ($validator->fails()) {
         return response()->json($validator->errors()->toJson(),400); 
       }
+      $image = $this->saveImage($request->image, 'profiles');
+
       $user = Doctor::create(array_merge(
         $validator->validated(),
-        ['password'=>bcrypt($request->password)]
+        ['password'=>bcrypt($request->password),
+        'image' => $image,
+        ]
       ));
       return response()->json([
         'message' => 'Doctor successfully registerd' ,
@@ -88,23 +93,24 @@ class DoctorController extends Controller
     public function update(Request $request)
     {
 
-      return response()->json($request->image);
-        // $attrs = $request->validate([
-        //     'name' => 'required|string',
+      //return response()->json(['request' => $request->file('image')->extension()]);
+      $attrs = $request->validate([
+          'name' => 'string',
+      ]);
+        // $image = time()."-".$request->file("image")->getClientOriginalName()."-".$request->file("image")->extension();
 
-        // ]);
+         $image = $this->saveImage($request->image, 'profiles');
 
-        // $image = $this->saveImage($request->image, 'profiles');
+         auth()->user()->update([
+          'name' => $request->name,
+          'phone' => $request->phone,
+          'image' => $image
+         ]);
 
-        // auth()->user()->update([
-        //     'name' => $attrs['name'],
-        //     'image' => $image
-        // ]);
-
-        // return response([
-        //     'message' => 'User updated.',
-        //     'user' => auth()->user()
-        // ], 200);
+         return response([
+             'message' => 'doctor updated.',
+             'user' => auth()->user()
+         ], 200);
     }
 
 

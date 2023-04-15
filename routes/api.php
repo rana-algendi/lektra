@@ -9,6 +9,9 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ImageController;
+
 
 use App\Http\Controllers\AppointmentController;
 
@@ -32,6 +35,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 
+
+//////////////doctor///////////////
  
 Route::group(['prefix'=>'doctor'], function($router){
    Route::post('/login' ,[DoctorController::class,'login']);
@@ -43,10 +48,23 @@ Route::group(['middleware'=>'jwt.role:doctor','jwt.auth' ,'prefix'=>'doctor'], f
     Route::get('/user-profile' ,[DoctorController::class,'userProfile']);
     Route::post('/update', [DoctorController::class, 'update']); 
 
+    Route::get('/reports', [ReportController::class, 'index']); // all reports
+    Route::post('/reports', [ReportController::class, 'store']); // create report
+    Route::get('/reports/{doctor_id}', [ReportController::class, 'show']); // get single report
+    Route::post('/reports/{doctor_id}', [ReportController::class, 'update']); // update report
+    Route::delete('/reports/{doctor_id}', [ReportController::class, 'destroy']); // delete report
+
+    Route::get('/reports/{doctor_id}/images', [ImageController::class, 'index']); // all images of a report
+    Route::post('/AddImage', [ImageController::class, 'store']); // create image in a report
+    Route::put('/images/{doctor_id}', [ImageController::class, 'update']); // update a image
+    Route::delete('/images/{doctor_id}', [ImageController::class, 'destroy']); // delete a image
+
+
+
     Route::get('/posts', [PostController::class, 'index_1']); // all posts
     Route::post('/posts', [PostController::class, 'store_1']); // create post
     Route::get('/posts/{doctor_id}', [PostController::class, 'show_1']); // get single post
-    Route::put('/posts/{doctor_id}', [PostController::class, 'update_1']); // update post
+    Route::post('/posts/{doctor_id}', [PostController::class, 'update_1']); // update post
     Route::delete('/posts/{doctor_id}', [PostController::class, 'destroy_1']); // delete post
     
     
@@ -69,6 +87,9 @@ Route::group(['middleware'=>'jwt.role:doctor','jwt.auth' ,'prefix'=>'doctor'], f
      Route::post('AddLike', [LikeController::class, 'likeOrUnlike_1']); // like or dislike back a post
  });
 
+
+
+
 ////////parent/////////
 
 
@@ -80,8 +101,11 @@ Route::group(['middleware'=>'jwt.role:doctor','jwt.auth' ,'prefix'=>'doctor'], f
  Route::group(['middleware'=>'jwt.role:ChildParent','jwt.auth' ,'prefix'=>'ChildParent'], function($router){
     Route::post('/logout' ,[ChildParentController::class,'logout']);
     Route::get('/user-profile' ,[ChildParentController::class,'userProfile']);
-    // عرض كل المستشفياتRoute::get('/hospital' ,[HospitalController::class,'hospital']);
-    // اضافه مستشفياتRoute::post('/upload' ,[HospitalController::class,'upload']);
+    Route::get('/hospitals' ,[HospitalController::class,'index']);// all hospitals
+    Route::post('/hospitals' ,[HospitalController::class,'store']);// create hospital
+    Route::get('/hospitals/{child_parent_id}', [HospitalController::class, 'show']); // get single hospital
+    Route::get('/reports/{child_parent_id}', [ReportController::class, 'show_1']); // get single report
+
     Route::post('/update', [ChildParentController::class, 'update']); 
 
 

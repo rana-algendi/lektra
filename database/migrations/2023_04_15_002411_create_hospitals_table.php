@@ -5,7 +5,6 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
-
 {
     /**
      * Run the migrations.
@@ -14,14 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('appointments', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('child_parent_id');
-            $table->unsignedInteger('doctor_id');
-            $table->string('date');
-            $table->string('day');
-            $table->string('time');
-            $table->string('status');
+        Schema::create('hospitals', function (Blueprint $table) {
+            $table->id();
+            $table->integer('child_parent_id')->nullable();
+            $table->string('name');
+            $table->string('about')->nullable();
+            $table->string('address')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
@@ -33,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('appointments');
+        Schema::dropIfExists('hospitals');
     }
 };

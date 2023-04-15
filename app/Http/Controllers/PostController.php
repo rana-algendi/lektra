@@ -89,11 +89,21 @@ class PostController extends Controller
 
         //validate fields
         $attrs = $request->validate([
-            'body' => 'required|string'
+            'body' => 'required|string',
+           
         ]);
 
+        //$image = time()."-".$request->file("posts")->getClientOriginalName()."-".$request->file("posts")->extension();
+       $image = $this->saveImage($request->image,'posts');
+        //$attrs = $request->validate([
+         //   'body' => 'required|string',
+           // 'image'=>''
+        //]);
+
         $post->update([
-            'body' =>  $attrs['body']
+            'body' =>  $attrs['body'],
+            'image'=>$image
+
         ]);
 
         // for now skip for post image
@@ -203,9 +213,13 @@ class PostController extends Controller
         $attrs = $request->validate([
             'body' => 'required|string'
         ]);
+      // $image = time()."-".$request->file("image")->getClientOriginalName()."-".$request->file("image")->extension();
+
+        $image = $this->saveImage($request->image,'posts');
 
         $post->update([
-            'body' =>  $attrs['body']
+            'body' => $attrs['body'],
+            'image'=>$image
         ]);
 
         // for now skip for post image

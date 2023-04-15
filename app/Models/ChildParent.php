@@ -24,6 +24,7 @@ class ChildParent extends Authenticatable implements JWTSubject
         'password',
         'phone',
         'image',
+
         
     ];
 
@@ -61,9 +62,13 @@ class ChildParent extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Post::class);
     }
-
-    public function appointments()
+    public function hospitals()
     {
-        return $this->hasMany(Appointment::class);
+        return $this->hasMany(Hospital::class);
+    }
+
+    public function reports()
+    {
+        return $this->hasOne(Report::class);
     }
 }

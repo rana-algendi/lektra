@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ChildParent;
 
-class Hospital extends Model
+
+class hospital extends Model
 {
     use HasFactory;
     protected $fillable = [
@@ -13,8 +15,12 @@ class Hospital extends Model
         'about',
         'address',
         'phone',
-        'image'
+        'image',
+        'child_parent_id'
     ];
 
-  
+    public function child_parent()
+    {
+        return $this->belongsTo(ChildParent::class);
+    }
 }
