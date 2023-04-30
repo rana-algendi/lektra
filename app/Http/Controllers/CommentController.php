@@ -81,6 +81,7 @@ class CommentController extends Controller
                 'message' => 'Permission denied.'
             ], 403);
         }
+        
 
         //validate fields
         $attrs = $request->validate([

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ChildParent;
+use App\Models\Doctor;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Config;
 
@@ -116,11 +118,11 @@ class ChildParentController extends Controller
 
      //  $image = time()."-".$request->file("image")->getClientOriginalName()."-".$request->file("image")->extension();
         $image = $this->saveImage($request->image, 'profiles');
-        auth("ChildParent-api")->user()->update([
+        auth()->user()->update([
             'name' => $request->name,
             'phone' => $request->phone,
             'image' => $image,
-            'password' => Hash::make($request->password),
+            //'password' => Hash::make($request->password),
         ]);
 
         return response([
@@ -129,6 +131,21 @@ class ChildParentController extends Controller
         ], 200);
     }
 
+
+
+
+
+
+     // get all doctors
+     public function index()
+     {
+         return response([
+             'doctors' => Doctor::orderBy('created_at', 'desc')//->with('doctor:id,name,image')->with('doctor:id,name,image')
+             
+             
+             ->get()
+         ], 200);
+     }
 
 
 

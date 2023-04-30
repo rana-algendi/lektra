@@ -58,6 +58,11 @@ class ChildParent extends Authenticatable implements JWTSubject
     }
 
 
+    public function doctors()
+    {
+        return $this->hasMany(Doctor::class);
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -70,5 +75,9 @@ class ChildParent extends Authenticatable implements JWTSubject
     public function reports()
     {
         return $this->hasOne(Report::class);
+    }
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
     }
 }

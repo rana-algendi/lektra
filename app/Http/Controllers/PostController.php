@@ -23,11 +23,12 @@ class PostController extends Controller
 
 
 
+
     // get all posts
     public function index()
     {
         return response([
-            'posts' => Post::orderBy('created_at', 'desc')->with('child_parent:id,name,image')->withCount('comments', 'likes')
+            'posts' => Post::orderBy('created_at', 'desc')->with('child_parent:id,name,image')->with('doctor:id,name,image')->withCount('comments', 'likes')
             ->with('likes', function($like){
                 return $like->where('child_parent_id', auth()->user()->id)
                     ->select('id', 'child_parent_id', 'post_id')->get();
@@ -151,7 +152,7 @@ class PostController extends Controller
     public function index_1()
     {
         return response([
-            'posts' => Post::orderBy('created_at', 'desc')->with('doctor:id,name,image')->withCount('comments', 'likes')
+            'posts' => Post::orderBy('created_at', 'desc')->with('doctor:id,name,image')->with('child_parent:id,name,image')->withCount('comments', 'likes')
             ->with('likes', function($like){
                 return $like->where('doctor_id', auth()->user()->id)
                     ->select('id', 'doctor_id', 'post_id')->get();

@@ -28,11 +28,33 @@ class ImageController extends Controller
         }
 
         return response([
-            'images' => $report->images()//->with('child_parent:id,name,image')
+            'images' => $report->images()->where('doctor_id', auth()->user()->id)
             ->get()
         ], 200);
     }
 
+//get single image
+    public function show(Request $request, $id)
+    {
+        $image = Image::find($id);
+
+        if(!$image)
+        {
+            return response([
+                'message' => 'image not found.'
+            ], 403);
+        }
+
+        if($image->doctor_id != auth()->user()->id)
+        {
+            return response([
+                'message' => 'Permission denied.'
+            ], 403);
+        }
+        return response([
+            'image' => Image::where('id', $id)->get()
+        ], 200);
+    }
       
   
       
@@ -44,7 +66,7 @@ class ImageController extends Controller
         if(!$report)
         {
             return response([
-                'message' => 'report not found.'
+                'message' => 'image not found.'
             ], 403);
         }
 
@@ -61,7 +83,7 @@ class ImageController extends Controller
         Image::create([
             'image' => $image,
             'report_id' => $request->report_id,
-            'child_parent_id' => auth()->user()->id,
+           // 'child_parent_id' => $request->child_parent_id,
             'doctor_id'=> auth()->user()->id,
             'title' => $attrs['title'],
             'descrpition' => $attrs['descrpition'],
@@ -105,12 +127,13 @@ class ImageController extends Controller
             'title'=>'string',
             'taken_at'=>''
         ]);
+        $images = $this->saveImage($request->image,'images');
 
         $image->update([
-            'image' => $image,
-            'report_id' => $request->report_id,
-            'child_parent_id' => auth()->user()->id,
-            'doctor_id'=> auth()->user()->id,
+            'image' => $images,
+            //'report_id' => $request->report_id,
+            //'child_parent_id' => auth()->user()->id,
+            //'doctor_id'=> auth()->user()->id,
             'title' => $attrs['title'],
             'descrpition' => $attrs['descrpition'],
             'taken_at' => $attrs['taken_at']

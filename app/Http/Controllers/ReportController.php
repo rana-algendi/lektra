@@ -6,6 +6,8 @@ use App\Models\Doctor;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Validator;
+
 
 
 class ReportController extends Controller
@@ -18,31 +20,82 @@ class ReportController extends Controller
     
     
     
-        // get all reports doctor
+        //get all reports doctor
         public function index()
-        {
+        {       
             return response([
-                'reports' => Report::orderBy('created_at', 'desc')//->with('doctor:id,child_name,child_image')
-                
-                ->get()
+                'reports' => Report::orderBy('created_at', 'desc')->where('doctor_id', auth()->user()->id)->get()
+                //->select('id', 'doctor_id', 'report_id')->get();
+            ], 200);
+        }
+        public function index_1()
+        {       
+            return response([
+                'reports' => Report::orderBy('created_at', 'desc')->where('child_parent_id', auth()->user()->id)->get()
+                //->select('id', 'doctor_id', 'report_id')->get();
             ], 200);
         }
        
     
+       
+    
+
+       
+        //بيعرض الريبورت الي لسه مكرياتاه مش كل الريبورتس بتاعت الدكتور
+       // public function index() {
+         //   return response()->json(auth('doctor-api'));
+        //}
+
+      
+    
         // get single report doctor
-        public function show($id)
+        public function show(Request $request, $id)
         {
+            $report = Report::find($id);
+    
+            if(!$report)
+            {
+                
+                return response([
+                    'message' => 'Report not found.'
+                ], 403);
+            }
+    
+            if($report->doctor_id != auth()->user()->id)
+            {
+                return response([
+                    'message' => 'Permission denied.'
+                ], 403);
+            }
             return response([
                 'report' => Report::where('id', $id)->get()
             ], 200);
         }
+
+
+
          // get single report parent
-         public function show_1($id)
-         {
-             return response([
-                 'report' => Report::where('child_parent_id', $id)->get()
-             ], 200);
-         }
+         public function show_1(Request $request, $id)
+        {
+            $report = Report::find($id);
+    
+            if(!$report)
+            {
+                return response([
+                    'message' => 'Report not found.'
+                ], 403);
+            }
+    
+            if($report->child_parent_id != auth()->user()->id)
+            {
+                return response([
+                    'message' => 'Permission denied.'
+                ], 403);
+            }
+            return response([
+                'report' => Report::where('id', $id)->get()
+            ], 200);
+        }
     
         // create a report
         public function store(Request $request)
@@ -63,10 +116,10 @@ class ReportController extends Controller
                 'diagnosis'=> 'required|string',
             ]);
 
-            $image = $this->saveImage($request->image,'reports');
+            $image = $this->saveImage($request->child_image,'reports');
             $report = Report::create([
                 'child_parent_id' => $request->child_parent_id,
-                'image_id' => $request->image_id,
+                //'image_id' => $request->image_id,
                 'doctor_id' => auth()->user()->id,
                 'child_image' => $image,
                 'child_name' => $attrs['child_name'],
@@ -91,7 +144,7 @@ class ReportController extends Controller
             ], 200);
         }
         
-        // update a post
+        // update a report
         public function update(Request $request, $id)
         {
             $report = Report::find($id);
@@ -123,25 +176,25 @@ class ReportController extends Controller
                 'height'=> 'string',
                 'started_in'=> 'string',
                 'last_time'=> 'string',
-                'diagnosis'=> 'string',            ]);
+                'diagnosis'=> 'string',          
+              ]);
 
             $image = $this->saveImage($request->image, 'reports');
             $report->update([
                 'child_image'=>$image,
-                'child_name' => $attrs['child_name'],
-                'father_name'=> $attrs['father_name'],
-                'mother_name'=> $attrs['mother_name'],
-                'national_id'=> $attrs['national_id'],
-                'blood_type'=> $attrs['blood_type'],
-                'age'=> $attrs['age'],
-                'birthday'=> $attrs['birthday'],
-                'weight'=> $attrs['weight'],
-                'height'=>$attrs['height'],
-                'started_in'=> $attrs['started_in'],
-                'last_time'=> $attrs['last_time'],
-                'diagnosis'=> $attrs['diagnosis'],            ]);
+                'child_name' =>$request->child_name,
+                'father_name'=> $request->father_name,
+                'mother_name'=> $request->mother_name,
+                'national_id'=>$request->national_id,
+                'blood_type'=>$request->blood_type,
+                'age'=>$request->age,
+                'birthday'=>$request->birthday,
+                'weight'=>$request->weight,
+                'height'=>$request->height,
+                'started_in'=>$request->started_in,
+                'last_time'=> $request->last_time,
+                'diagnosis'=> $request->diagnosis,         ]);
     
-            // for now skip for post image
     
             return response([
                 'message' => 'Report updated.',
@@ -150,7 +203,7 @@ class ReportController extends Controller
 
         }
        
-        //delete post
+        //delete report
         public function destroy($id)
         {
             $report = Report::find($id);
@@ -172,7 +225,7 @@ class ReportController extends Controller
             $report->delete();
     
             return response([
-                'message' => 'Post deleted.'
+                'message' => 'report deleted.'
             ], 200);
         }
        

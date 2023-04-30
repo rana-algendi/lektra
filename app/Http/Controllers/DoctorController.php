@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Doctor;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Hash;
 
 
 
@@ -94,9 +95,9 @@ class DoctorController extends Controller
     {
 
       //return response()->json(['request' => $request->file('image')->extension()]);
-      $attrs = $request->validate([
-          'name' => 'string',
-      ]);
+      //$attrs = $request->validate([
+        //  'name' => 'string',
+      //]);
         // $image = time()."-".$request->file("image")->getClientOriginalName()."-".$request->file("image")->extension();
 
          $image = $this->saveImage($request->image, 'profiles');
@@ -104,7 +105,8 @@ class DoctorController extends Controller
          auth()->user()->update([
           'name' => $request->name,
           'phone' => $request->phone,
-          'image' => $image
+          'image' => $image,
+
          ]);
 
          return response([

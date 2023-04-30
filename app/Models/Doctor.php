@@ -57,6 +57,12 @@ class Doctor extends Authenticatable implements JWTSubject
         return ['role' => 'doctor'];
     }
 
+    
+    public function child_parent()
+    {
+        return $this->hasMany(ChildParent::class);
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class);
@@ -64,5 +70,9 @@ class Doctor extends Authenticatable implements JWTSubject
     public function reports()
     {
         return $this->hasMany(Report::class);
+    }
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
     }
 }
